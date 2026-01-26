@@ -1,0 +1,50 @@
+{
+  "name": "tana-feature-flags",
+  "version": "1.0.0",
+  "description": "Production-grade feature flag service - 30 day portfolio project",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "sdk",
+    "dashboard"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../sdk && npm install && cd ../dashboard && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:dashboard": "cd dashboard && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:dashboard\"",
+    "build:backend": "cd backend && npm run build",
+    "build:sdk": "cd sdk && npm run build",
+    "build:dashboard": "cd dashboard && npm run build",
+    "build": "npm run build:backend && npm run build:sdk && npm run build:dashboard",
+    "test:backend": "cd backend && npm test",
+    "test:sdk": "cd sdk && npm test",
+    "test": "npm run test:backend && npm run test:sdk",
+    "lint": "cd backend && npm run lint && cd ../sdk && npm run lint && cd ../dashboard && npm run lint",
+    "format": "cd backend && npm run format && cd ../sdk && npm run format && cd ../dashboard && npm run format",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "migrate": "cd backend && npm run migrate",
+    "clean": "rm -rf backend/node_modules backend/dist sdk/node_modules sdk/dist dashboard/node_modules dashboard/dist node_modules"
+  },
+  "keywords": [
+    "feature-flags",
+    "feature-toggles",
+    "portfolio",
+    "production-ready"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/tana-feature-flags.git"
+  }
+}
