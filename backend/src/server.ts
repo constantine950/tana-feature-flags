@@ -63,6 +63,17 @@ const startServer = async () => {
   }
 };
 
+// Graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully...");
+  process.exit(0);
+});
+
+process.on("SIGINT", () => {
+  console.log("\nSIGINT received, shutting down gracefully...");
+  process.exit(0);
+});
+
 startServer();
 
 export default app;

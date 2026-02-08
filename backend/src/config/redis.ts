@@ -38,7 +38,7 @@ export const setCache = async (
   key: string,
   value: string,
   ttl: number = 60,
-) => {
+): Promise<void> => {
   await redis.setex(key, ttl, value);
 };
 
@@ -46,8 +46,15 @@ export const getCache = async (key: string): Promise<string | null> => {
   return redis.get(key);
 };
 
-export const deleteCache = async (key: string) => {
+export const deleteCache = async (key: string): Promise<void> => {
   await redis.del(key);
+};
+
+export const clearCache = async (pattern: string = "*"): Promise<void> => {
+  const keys = await redis.keys(pattern);
+  if (keys.length > 0) {
+    await redis.del(...keys);
+  }
 };
 
 export default redis;

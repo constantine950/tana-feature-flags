@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, PoolClient } from "pg";
 
 // Create connection pool
 const pool = new Pool({
@@ -44,6 +44,17 @@ export const testConnection = async (): Promise<boolean> => {
     console.error("❌ Database test failed:", error);
     return false;
   }
+};
+
+// Get a client from pool
+export const getClient = async (): Promise<PoolClient> => {
+  return pool.connect();
+};
+
+// Close pool
+export const closePool = async (): Promise<void> => {
+  await pool.end();
+  console.log("Database pool closed");
 };
 
 export default pool;

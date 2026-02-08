@@ -32,4 +32,13 @@ export const config: EnvConfig = {
   apiKeySecret: process.env.API_KEY_SECRET!,
 };
 
+if (config.nodeEnv === "development") {
+  console.log("⚙️  Configuration loaded:", {
+    ...config,
+    jwtSecret: "***hidden***",
+    apiKeySecret: "***hidden***",
+    databaseUrl: config.databaseUrl.replace(/:[^:@]+@/, ":***@"),
+  });
+}
+
 export default config;
