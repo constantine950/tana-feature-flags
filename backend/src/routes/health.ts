@@ -4,7 +4,7 @@ import redis from "../config/redis";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (_req: Request, res: Response) => {
   try {
     // Check database
     const dbStart = Date.now();

@@ -1,13 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function runMigrations(): Promise<void> {
   const pool = new Pool({
-    connectionString:
-      "postgresql://postgres:postgres@localhost:5432/tana_flags",
+    connectionString: process.env.DATABASE_URL,
   });
 
   try {

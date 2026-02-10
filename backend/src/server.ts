@@ -7,6 +7,7 @@ import { testConnection } from "./config/database";
 import { testRedisConnection } from "./config/redis";
 import { errorHandler } from "./middleware/errorHandler";
 import healthRoutes from "./routes/health";
+import authRoutes from "./routes/auth"; // NEW
 
 const app: Application = express();
 
@@ -24,6 +25,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/health", healthRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
