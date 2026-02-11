@@ -10,6 +10,7 @@ import healthRoutes from "./routes/health";
 import authRoutes from "./routes/auth";
 import projectRoutes from "./routes/projects";
 import environmentRoutes from "./routes/environments";
+import flagRoutes from "./routes/flags";
 
 const app: Application = express();
 
@@ -28,8 +29,9 @@ app.use(morgan("dev"));
 // Routes
 app.use("/health", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/projects", projectRoutes); // NEW
-app.use("/api/v1/environments", environmentRoutes); // NEW
+app.use("/api/v1/projects", projectRoutes);
+app.use("/api/v1/environments", environmentRoutes);
+app.use("/api/v1/flags", flagRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {

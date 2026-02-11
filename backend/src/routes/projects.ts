@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { ProjectController } from "../controllers/projectController";
 import { EnvironmentController } from "../controllers/environmentController";
+import { FlagController } from "../controllers/flagController"; // NEW
 import { authenticate } from "../middleware/authenticate";
 
 const router = Router();
 
-// All routes require authentication
 router.use(authenticate);
 
 // Project routes
@@ -21,5 +21,9 @@ router.post(
   "/:projectId/environments",
   EnvironmentController.createEnvironment,
 );
+
+// Flag routes - NEW
+router.get("/:projectId/flags", FlagController.listFlags);
+router.post("/:projectId/flags", FlagController.createFlag);
 
 export default router;

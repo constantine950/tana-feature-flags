@@ -55,19 +55,49 @@ export interface Environment {
 
 export interface FeatureFlag {
   id: string;
-  projectId: string;
+  project_id: string;
   key: string;
   name: string;
-  description?: string;
+  description: string | null;
   status: "active" | "inactive" | "archived";
+  created_at: Date;
+  updated_at: Date;
+  created_by: string | null;
 }
 
 export interface FlagRule {
   id: string;
-  flagId: string;
-  environmentId: string;
+  flag_id: string;
+  environment_id: string;
   enabled: boolean;
   percentage: number;
-  userWhitelist: string[];
-  userBlacklist: string[];
+  user_whitelist: string[];
+  user_blacklist: string[];
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface FlagWithRule extends FeatureFlag {
+  rule?: FlagRule;
+}
+
+export interface EvaluationRequest {
+  flagKey: string;
+  userId: string;
+  context?: Record<string, any>;
+}
+
+export interface EvaluationResult {
+  enabled: boolean;
+  flagKey: string;
+  reason:
+    | "flag_disabled"
+    | "user_blacklist"
+    | "user_whitelist"
+    | "percentage_rollout"
+    | "flag_not_found";
+  metadata?: {
+    percentage?: number;
+    bucket?: number;
+  };
 }
