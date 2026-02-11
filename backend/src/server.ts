@@ -7,7 +7,9 @@ import { testConnection } from "./config/database";
 import { testRedisConnection } from "./config/redis";
 import { errorHandler } from "./middleware/errorHandler";
 import healthRoutes from "./routes/health";
-import authRoutes from "./routes/auth"; // NEW
+import authRoutes from "./routes/auth";
+import projectRoutes from "./routes/projects";
+import environmentRoutes from "./routes/environments";
 
 const app: Application = express();
 
@@ -26,6 +28,8 @@ app.use(morgan("dev"));
 // Routes
 app.use("/health", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/projects", projectRoutes); // NEW
+app.use("/api/v1/environments", environmentRoutes); // NEW
 
 // 404 handler
 app.use("*", (req, res) => {

@@ -13,7 +13,6 @@ async function runMigrations(): Promise<void> {
   try {
     console.log("🚀 Starting database migrations...\n");
 
-    // Create migrations tracking table if it doesn't exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
         id SERIAL PRIMARY KEY,
@@ -95,5 +94,4 @@ async function runMigrations(): Promise<void> {
   }
 }
 
-// Run migrations
 runMigrations();
