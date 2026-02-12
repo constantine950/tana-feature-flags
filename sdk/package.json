@@ -1,50 +1,32 @@
 {
-  "name": "@tana/feature-flags-sdk",
+  "name": "@tana/feature-flags",
   "version": "1.0.0",
-  "description": "JavaScript/TypeScript SDK for Tana Feature Flag Service",
+  "description": "JavaScript/TypeScript SDK for Tana Feature Flags",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "prepublishOnly": "npm run build",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "prepare": "npm run build",
+    "test": "echo \"No tests yet\"",
+    "example": "ts-node examples/basic.ts"
   },
   "keywords": [
     "feature-flags",
     "feature-toggles",
-    "sdk",
     "tana"
   ],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.2"
+    "axios": "^1.13.5"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "eslint": "^8.56.0",
-    "jest": "^29.7.0",
-    "@types/jest": "^29.5.11",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3",
-    "prettier": "^3.1.1"
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
   },
   "files": [
-    "dist",
+    "dist/**/*",
     "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/tana-feature-flags.git",
-    "directory": "sdk"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  }
+  ]
 }
