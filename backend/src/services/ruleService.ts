@@ -1,5 +1,7 @@
 import { query } from "../config/database";
 import { FlagRule } from "../types";
+import { EvaluationService } from "./evaluationService";
+import { FlagService } from "./flagService";
 
 export class RuleService {
   // Get or create rule
@@ -29,7 +31,6 @@ export class RuleService {
     return result.rows[0];
   }
 
-  // Update rule
   static async updateRule(
     flagId: string,
     environmentId: string,
@@ -86,12 +87,20 @@ export class RuleService {
       values,
     );
 
-    if (result.rows.length === 0) {
-      // Rule doesn't exist, create it
-      return this.getOrCreateRule(flagId, environmentId);
+    const rule =
+      result.rows[0] || (await this.getOrCreateRule(flagId, environmentId));
+
+    // Invalidate cache - NEW
+    const flag = await FlagService.getFlagById(flagId);
+    if (flag) {
+      await EvaluationService.invalidateCache(
+        flag.project_id,
+        environmentId,
+        flag.key,
+      );
     }
 
-    return result.rows[0];
+    return rule;
   }
 
   // Get rule
