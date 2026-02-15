@@ -43,12 +43,12 @@ export interface Project {
   id: string;
   name: string;
   description?: string;
-  ownerId: string;
+  owner_id: string;
 }
 
 export interface Environment {
   id: string;
-  projectId: string;
+  project_id: string;
   name: string;
   key: string;
 }

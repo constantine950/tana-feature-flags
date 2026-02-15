@@ -124,7 +124,7 @@ export class EnvironmentController {
 
       // Check project ownership
       const isOwner = await ProjectService.isOwner(
-        environment.projectId,
+        environment.project_id,
         req.user.userId,
       );
 
@@ -173,7 +173,7 @@ export class EnvironmentController {
 
       // Check ownership
       const isOwner = await ProjectService.isOwner(
-        environment.projectId,
+        environment.project_id,
         req.user.userId,
       );
 

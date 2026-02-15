@@ -23,7 +23,7 @@ export class EvaluationController {
       }
 
       const result = await EvaluationService.evaluateWithCache(
-        req.environment.projectId,
+        req.environment.project_id,
         req.environment.id,
         flagKey,
         userId,
@@ -77,7 +77,7 @@ export class EvaluationController {
       }
 
       const results = await EvaluationService.evaluateBatch(
-        req.environment.projectId,
+        req.environment.project_id,
         req.environment.id,
         flagKeys,
         userId,

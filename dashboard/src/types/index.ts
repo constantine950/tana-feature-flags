@@ -18,6 +18,7 @@ export interface Project {
   owner_id: string;
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
   environment_count?: string;
   flag_count?: string;
 }

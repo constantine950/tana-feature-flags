@@ -80,7 +80,7 @@ export class ProjectController {
       }
 
       // Check ownership
-      if (project.ownerId !== req.user.userId) {
+      if (project.owner_id !== req.user.userId) {
         return res.status(403).json({
           error: { code: "FORBIDDEN", message: "Not project owner" },
         });

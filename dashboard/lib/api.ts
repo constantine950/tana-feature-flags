@@ -56,3 +56,67 @@ export const authApi = {
     return response.data;
   },
 };
+
+export const projectsApi = {
+  list: async () => {
+    const response = await api.get("/api/v1/projects");
+    return response.data;
+  },
+
+  create: async (name: string, description?: string) => {
+    const response = await api.post("/api/v1/projects", {
+      name,
+      description,
+    });
+    return response.data;
+  },
+
+  get: async (id: string) => {
+    const response = await api.get(`/api/v1/projects/${id}`);
+    return response.data;
+  },
+
+  update: async (id: string, name?: string, description?: string) => {
+    const response = await api.put(`/api/v1/projects/${id}`, {
+      name,
+      description,
+    });
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/api/v1/projects/${id}`);
+    return response.data;
+  },
+};
+
+// Environments API
+export const environmentsApi = {
+  list: async (projectId: string) => {
+    const response = await api.get(
+      `/api/v1/projects/${projectId}/environments`,
+    );
+    return response.data;
+  },
+
+  create: async (projectId: string, name: string, key: string) => {
+    const response = await api.post(
+      `/api/v1/projects/${projectId}/environments`,
+      {
+        name,
+        key,
+      },
+    );
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/api/v1/environments/${id}`);
+    return response.data;
+  },
+
+  rotateKey: async (id: string) => {
+    const response = await api.post(`/api/v1/environments/${id}/rotate-key`);
+    return response.data;
+  },
+};
