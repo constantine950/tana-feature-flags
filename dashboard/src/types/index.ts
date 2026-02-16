@@ -42,4 +42,21 @@ export interface FeatureFlag {
   status: "active" | "inactive" | "archived";
   created_at: string;
   updated_at: string;
+  created_by: string | null;
+}
+
+export interface FlagRule {
+  id: string;
+  flag_id: string;
+  environment_id: string;
+  enabled: boolean;
+  percentage: number;
+  user_whitelist: string[];
+  user_blacklist: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FlagWithRule extends FeatureFlag {
+  rule?: FlagRule | null;
 }

@@ -150,6 +150,14 @@ export const ProjectDetails: React.FC = () => {
               </p>
             )}
           </div>
+          <div className="mt-4 sm:mt-0">
+            <button
+              onClick={() => navigate(`/projects/${id}/flags`)}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              View Flags
+            </button>
+          </div>
         </div>
 
         <div className="mt-8">

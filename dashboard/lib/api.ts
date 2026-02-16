@@ -120,3 +120,69 @@ export const environmentsApi = {
     return response.data;
   },
 };
+
+export const flagsApi = {
+  list: async (projectId: string, environmentId?: string) => {
+    const params = environmentId ? `?environmentId=${environmentId}` : "";
+    const response = await api.get(
+      `/api/v1/projects/${projectId}/flags${params}`,
+    );
+    return response.data;
+  },
+
+  create: async (
+    projectId: string,
+    key: string,
+    name: string,
+    description?: string,
+  ) => {
+    const response = await api.post(`/api/v1/projects/${projectId}/flags`, {
+      key,
+      name,
+      description,
+    });
+    return response.data;
+  },
+
+  get: async (id: string) => {
+    const response = await api.get(`/api/v1/flags/${id}`);
+    return response.data;
+  },
+
+  update: async (
+    id: string,
+    updates: { name?: string; description?: string; status?: string },
+  ) => {
+    const response = await api.put(`/api/v1/flags/${id}`, updates);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/api/v1/flags/${id}`);
+    return response.data;
+  },
+
+  getRule: async (flagId: string, environmentId: string) => {
+    const response = await api.get(
+      `/api/v1/flags/${flagId}/rules/${environmentId}`,
+    );
+    return response.data;
+  },
+
+  updateRule: async (
+    flagId: string,
+    environmentId: string,
+    updates: {
+      enabled?: boolean;
+      percentage?: number;
+      userWhitelist?: string[];
+      userBlacklist?: string[];
+    },
+  ) => {
+    const response = await api.put(
+      `/api/v1/flags/${flagId}/rules/${environmentId}`,
+      updates,
+    );
+    return response.data;
+  },
+};
