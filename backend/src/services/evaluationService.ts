@@ -117,6 +117,17 @@ export class EvaluationService {
     // Evaluate
     const result = this.evaluate(rule, userId, flagKey);
 
+    // NEW: Track evaluation in Redis
+    try {
+      const totalKey = `stats:flag:${flag.id}:total`;
+      const resultKey = `stats:flag:${flag.id}:${result.enabled ? "enabled" : "disabled"}`;
+
+      await redis.incr(totalKey);
+      await redis.incr(resultKey);
+    } catch (error) {
+      console.error("Failed to track evaluation:", error);
+    }
+
     // Cache result
     try {
       await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(result));

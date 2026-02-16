@@ -186,3 +186,27 @@ export const flagsApi = {
     return response.data;
   },
 };
+
+// Analytics API
+export const analyticsApi = {
+  getProjectActivity: async (projectId: string, limit?: number) => {
+    const params = limit ? `?limit=${limit}` : "";
+    const response = await api.get(
+      `/api/v1/analytics/projects/${projectId}/activity${params}`,
+    );
+    return response.data;
+  },
+
+  getFlagActivity: async (flagId: string, limit?: number) => {
+    const params = limit ? `?limit=${limit}` : "";
+    const response = await api.get(
+      `/api/v1/analytics/flags/${flagId}/activity${params}`,
+    );
+    return response.data;
+  },
+
+  getFlagStats: async (flagId: string) => {
+    const response = await api.get(`/api/v1/analytics/flags/${flagId}/stats`);
+    return response.data;
+  },
+};

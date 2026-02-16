@@ -7,7 +7,12 @@ import { Drawer } from "../components/Drawer";
 import { Badge } from "../components/Badge";
 import { EmptyState } from "../components/EmptyState";
 import { Project, Environment, FlagWithRule, FlagRule } from "../types";
-import { environmentsApi, flagsApi, projectsApi } from "../../lib/api";
+import {
+  analyticsApi,
+  environmentsApi,
+  flagsApi,
+  projectsApi,
+} from "../../lib/api";
 
 export const Flags: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -18,6 +23,7 @@ export const Flags: React.FC = () => {
   const [selectedEnv, setSelectedEnv] = useState<string>("");
   const [flags, setFlags] = useState<FlagWithRule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [flagStats, setFlagStats] = useState<any>(null);
 
   // Create flag modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -100,8 +106,16 @@ export const Flags: React.FC = () => {
     }
   };
 
-  const openRuleDrawer = (flag: FlagWithRule) => {
+  const openRuleDrawer = async (flag: FlagWithRule) => {
     setSelectedFlag(flag);
+
+    // Load stats
+    try {
+      const data = await analyticsApi.getFlagStats(flag.id);
+      setFlagStats(data.stats);
+    } catch (err) {
+      console.error("Failed to load stats:", err);
+    }
 
     if (flag.rule) {
       setRuleEnabled(flag.rule.enabled);
@@ -437,6 +451,34 @@ export const Flags: React.FC = () => {
         title={`Configure: ${selectedFlag?.name}`}
       >
         <div className="space-y-6">
+          {flagStats && (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                Evaluation Stats
+              </h4>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {flagStats.totalEvaluations}
+                  </div>
+                  <div className="text-xs text-gray-500">Total</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {flagStats.enabledCount}
+                  </div>
+                  <div className="text-xs text-gray-500">Enabled</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-red-600">
+                    {flagStats.disabledCount}
+                  </div>
+                  <div className="text-xs text-gray-500">Disabled</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Enable/Disable Toggle */}
           <div>
             <label className="flex items-center justify-between">

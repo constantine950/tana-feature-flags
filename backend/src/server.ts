@@ -12,6 +12,7 @@ import projectRoutes from "./routes/projects";
 import environmentRoutes from "./routes/environments";
 import flagRoutes from "./routes/flags";
 import evaluateRoutes from "./routes/evaluate";
+import analyticsRoutes from "./routes/analytics";
 
 const app: Application = express();
 
@@ -34,6 +35,7 @@ app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/environments", environmentRoutes);
 app.use("/api/v1/flags", flagRoutes);
 app.use("/api/v1/evaluate", evaluateRoutes);
+app.use("/api/v1/analytics", analyticsRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {

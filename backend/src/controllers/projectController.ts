@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ProjectService } from "../services/projectService";
+import { AuditService } from "../services/auditService";
 
 export class ProjectController {
   // GET /api/v1/projects
@@ -50,6 +51,11 @@ export class ProjectController {
         req.user.userId,
         description,
       );
+
+      await AuditService.log(req.user.userId, "create", "project", project.id, {
+        name,
+        description,
+      });
 
       return res.status(201).json({ project });
     } catch (error) {

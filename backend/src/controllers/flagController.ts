@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { FlagService } from "../services/flagService";
 import { RuleService } from "../services/ruleService";
 import { ProjectService } from "../services/projectService";
+import { AuditService } from "../services/auditService";
 
 export class FlagController {
   // GET /api/v1/projects/:projectId/flags
@@ -86,6 +87,12 @@ export class FlagController {
         description || null,
         req.user.userId,
       );
+
+      await AuditService.log(req.user.userId, "create", "flag", flag.id, {
+        key,
+        name,
+        description,
+      });
 
       return res.status(201).json({ flag });
     } catch (error: any) {
@@ -272,6 +279,12 @@ export class FlagController {
         percentage,
         userWhitelist,
         userBlacklist,
+      });
+
+      await AuditService.log(req.user.userId, "update", "rule", flagId, {
+        environmentId,
+        enabled,
+        percentage,
       });
 
       return res.json({ rule });

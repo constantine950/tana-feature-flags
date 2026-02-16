@@ -5,7 +5,8 @@ import { Layout } from "../components/Layout";
 import { Modal } from "../components/Modal";
 import { EmptyState } from "../components/EmptyState";
 import { Project, Environment } from "../types";
-import { environmentsApi, projectsApi } from "../../lib/api";
+import { analyticsApi, environmentsApi, projectsApi } from "../../lib/api";
+import { ActivityTimeline } from "../components/ActivityTimeline";
 
 export const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,11 +21,14 @@ export const ProjectDetails: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [newApiKey, setNewApiKey] = useState("");
+  const [activities, setActivities] = useState<any[]>([]);
+  const [loadingActivity, setLoadingActivity] = useState(false);
 
   useEffect(() => {
     if (id) {
       loadProject();
       loadEnvironments();
+      loadActivity();
     }
   }, [id]);
 
@@ -45,6 +49,18 @@ export const ProjectDetails: React.FC = () => {
       setEnvironments(data.environments || []);
     } catch (err) {
       console.error("Failed to load environments:", err);
+    }
+  };
+
+  const loadActivity = async () => {
+    setLoadingActivity(true);
+    try {
+      const data = await analyticsApi.getProjectActivity(id!, 20);
+      setActivities(data.logs || []);
+    } catch (err) {
+      console.error("Failed to load activity:", err);
+    } finally {
+      setLoadingActivity(false);
     }
   };
 
@@ -225,6 +241,20 @@ export const ProjectDetails: React.FC = () => {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            Recent Activity
+          </h2>
+          {loadingActivity ? (
+            <div className="text-center py-8 text-gray-500">Loading...</div>
+          ) : (
+            <div className="bg-white shadow sm:rounded-lg p-6">
+              <ActivityTimeline activities={activities} />
             </div>
           )}
         </div>
