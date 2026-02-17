@@ -7,6 +7,8 @@ import { EmptyState } from "../components/EmptyState";
 import { Project, Environment } from "../types";
 import { analyticsApi, environmentsApi, projectsApi } from "../../lib/api";
 import { ActivityTimeline } from "../components/ActivityTimeline";
+import toast from "react-hot-toast";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 
 export const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +25,9 @@ export const ProjectDetails: React.FC = () => {
   const [newApiKey, setNewApiKey] = useState("");
   const [activities, setActivities] = useState<any[]>([]);
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const [confirmDeleteEnv, setConfirmDeleteEnv] = useState<string | null>(null);
+  const [confirmRotateEnv, setConfirmRotateEnv] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -85,40 +90,37 @@ export const ProjectDetails: React.FC = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard!");
   };
 
-  const handleRotateKey = async (envId: string) => {
-    if (
-      !confirm("Are you sure? The old API key will stop working immediately.")
-    ) {
-      return;
-    }
-
+  const handleRotateKey = async () => {
+    if (!confirmRotateEnv) return;
+    setConfirming(true);
     try {
-      const data = await environmentsApi.rotateKey(envId);
-      alert(
-        `New API key: ${data.apiKey}\n\nSave it now - it won't be shown again!`,
-      );
+      const data = await environmentsApi.rotateKey(confirmRotateEnv);
       copyToClipboard(data.apiKey);
+      toast.success("New API key copied!");
+      setConfirmRotateEnv(null);
     } catch (err) {
-      alert("Failed to rotate API key");
+      toast.error("Failed to rotate key");
+    } finally {
+      setConfirming(false);
     }
   };
 
-  const handleDeleteEnv = async (envId: string) => {
-    if (
-      !confirm(
-        "Are you sure? This will delete all flag rules for this environment.",
-      )
-    ) {
-      return;
-    }
-
+  const handleDeleteEnv = async () => {
+    if (!confirmDeleteEnv) return;
+    setConfirming(true);
     try {
-      await environmentsApi.delete(envId);
+      await environmentsApi.delete(confirmDeleteEnv);
+      toast.success("Environment deleted");
+      setConfirmDeleteEnv(null);
       loadEnvironments();
+      loadActivity();
     } catch (err) {
-      alert("Failed to delete environment");
+      toast.error("Failed to delete");
+    } finally {
+      setConfirming(false);
     }
   };
 
@@ -223,14 +225,14 @@ export const ProjectDetails: React.FC = () => {
                       </div>
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handleRotateKey(env.id)}
+                          onClick={() => setConfirmRotateEnv(env.id)}
                           className="text-indigo-600 hover:text-indigo-900"
                           title="Rotate API Key"
                         >
                           <RefreshCw className="h-5 w-5" />
                         </button>
                         <button
-                          onClick={() => handleDeleteEnv(env.id)}
+                          onClick={() => setConfirmDeleteEnv(env.id)}
                           className="text-red-600 hover:text-red-900"
                           title="Delete Environment"
                         >
@@ -385,6 +387,26 @@ export const ProjectDetails: React.FC = () => {
           </form>
         )}
       </Modal>
+      <ConfirmDialog
+        isOpen={!!confirmRotateEnv}
+        onClose={() => setConfirmRotateEnv(null)}
+        onConfirm={handleRotateKey}
+        title="Rotate API Key"
+        message="Old API key stops working immediately. Update your apps with the new key."
+        confirmLabel="Rotate Key"
+        confirmVariant="primary"
+        loading={confirming}
+      />
+      <ConfirmDialog
+        isOpen={!!confirmDeleteEnv}
+        onClose={() => setConfirmDeleteEnv(null)}
+        onConfirm={handleDeleteEnv}
+        title="Delete Environment"
+        message="This will permanently delete all flag rules for this environment."
+        confirmLabel="Delete"
+        confirmVariant="danger"
+        loading={confirming}
+      />
     </Layout>
   );
 };

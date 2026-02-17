@@ -6,6 +6,8 @@ import { Modal } from "../components/Modal";
 import { EmptyState } from "../components/EmptyState";
 import { Project } from "../types";
 import { projectsApi } from "../../lib/api";
+import { ProjectCardSkeleton } from "../components/Skeleton";
+import { toast } from "react-hot-toast";
 
 export const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -40,6 +42,7 @@ export const Projects: React.FC = () => {
 
     try {
       await projectsApi.create(name, description);
+      toast.success("Project created!");
       setShowCreateModal(false);
       setName("");
       setDescription("");
@@ -56,8 +59,17 @@ export const Projects: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Loading...</div>
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="sm:flex sm:items-center mb-8">
+            <div className="sm:flex-auto">
+              <h1 className="text-2xl font-semibold text-gray-900">Projects</h1>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <ProjectCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </Layout>
     );
@@ -115,10 +127,20 @@ export const Projects: React.FC = () => {
                     {project.description}
                   </p>
                 )}
-                <div className="mt-4 flex items-center text-sm text-gray-500">
-                  <span>{project.environment_count || 0} environments</span>
-                  <span className="mx-2">•</span>
-                  <span>{project.flag_count || 0} flags</span>
+                <div className="mt-4 flex items-center text-sm text-gray-500 space-x-4">
+                  <span className="flex items-center">
+                    <span className="font-medium text-gray-900 mr-1">
+                      {project.environment_count || 0}
+                    </span>
+                    environments
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center">
+                    <span className="font-medium text-gray-900 mr-1">
+                      {project.flag_count || 0}
+                    </span>
+                    flags
+                  </span>
                 </div>
               </div>
             ))}

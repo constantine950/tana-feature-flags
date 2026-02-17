@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, Settings, ArrowLeft, Flag } from "lucide-react";
+import { Plus, Settings, ArrowLeft, Flag, Trash2 } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Modal } from "../components/Modal";
 import { Drawer } from "../components/Drawer";
@@ -13,6 +13,9 @@ import {
   flagsApi,
   projectsApi,
 } from "../../lib/api";
+import toast from "react-hot-toast";
+import { ConfirmDialog } from "../components/ConfirmDialog";
+import { FlagRowSkeleton } from "../components/Skeleton";
 
 export const Flags: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,6 +27,12 @@ export const Flags: React.FC = () => {
   const [flags, setFlags] = useState<FlagWithRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [flagStats, setFlagStats] = useState<any>(null);
+  const [togglingFlag, setTogglingFlag] = useState<string | null>(null);
+  const [confirmDeleteFlag, setConfirmDeleteFlag] = useState<string | null>(
+    null,
+  );
+  const [deletingFlag, setDeletingFlag] = useState(false);
+  const [loadingFlags, setLoadingFlags] = useState(false);
 
   // Create flag modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -79,11 +88,14 @@ export const Flags: React.FC = () => {
   };
 
   const loadFlags = async () => {
+    setLoadingFlags(true);
     try {
       const data = await flagsApi.list(projectId!, selectedEnv);
       setFlags(data.flags || []);
     } catch (err) {
       console.error("Failed to load flags:", err);
+    } finally {
+      setLoadingFlags(false);
     }
   };
 
@@ -94,6 +106,7 @@ export const Flags: React.FC = () => {
 
     try {
       await flagsApi.create(projectId!, flagKey, flagName, flagDescription);
+      toast.success("Flag created!");
       setShowCreateModal(false);
       setFlagKey("");
       setFlagName("");
@@ -134,8 +147,8 @@ export const Flags: React.FC = () => {
 
   const handleSaveRule = async () => {
     if (!selectedFlag) return;
-
     setSavingRule(true);
+
     try {
       await flagsApi.updateRule(selectedFlag.id, selectedEnv, {
         enabled: ruleEnabled,
@@ -149,13 +162,52 @@ export const Flags: React.FC = () => {
           .map((s) => s.trim())
           .filter(Boolean),
       });
-
+      toast.success("Rule saved!");
       setShowRuleDrawer(false);
       loadFlags();
     } catch (err) {
-      alert("Failed to save rule");
+      toast.error("Failed to save rule");
     } finally {
       setSavingRule(false);
+    }
+  };
+
+  const handleQuickToggle = async (flag: FlagWithRule, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (togglingFlag === flag.id) return;
+
+    setTogglingFlag(flag.id);
+    const newEnabled = !flag.rule?.enabled;
+
+    try {
+      await flagsApi.updateRule(flag.id, selectedEnv, {
+        enabled: newEnabled,
+        percentage: flag.rule?.percentage ?? 0,
+        userWhitelist: flag.rule?.user_whitelist ?? [],
+        userBlacklist: flag.rule?.user_blacklist ?? [],
+      });
+      toast.success(`${flag.name} ${newEnabled ? "enabled" : "disabled"}`);
+      loadFlags();
+    } catch (err) {
+      toast.error("Failed to toggle flag");
+    } finally {
+      setTogglingFlag(null);
+    }
+  };
+
+  const handleDeleteFlag = async () => {
+    if (!confirmDeleteFlag) return;
+    setDeletingFlag(true);
+
+    try {
+      await flagsApi.delete(confirmDeleteFlag);
+      toast.success("Flag deleted");
+      setConfirmDeleteFlag(null);
+      loadFlags();
+    } catch (err) {
+      toast.error("Failed to delete flag");
+    } finally {
+      setDeletingFlag(false);
     }
   };
 
@@ -281,8 +333,15 @@ export const Flags: React.FC = () => {
           </select>
         </div>
 
-        {/* Flags List */}
-        {flags.length === 0 ? (
+        {loadingFlags ? (
+          <div className="mt-8 bg-white shadow overflow-hidden sm:rounded-md">
+            <ul className="divide-y divide-gray-200">
+              {[1, 2, 3].map((i) => (
+                <FlagRowSkeleton key={i} />
+              ))}
+            </ul>
+          </div>
+        ) : flags.length === 0 ? (
           <div className="mt-8">
             <EmptyState
               icon={<Flag className="h-12 w-12" />}
@@ -304,37 +363,68 @@ export const Flags: React.FC = () => {
                     className="px-4 py-4 sm:px-6 hover:bg-gray-50"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-sm font-medium text-gray-900">
+                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                        {/* Quick Toggle */}
+                        <button
+                          onClick={(e) => handleQuickToggle(flag, e)}
+                          disabled={togglingFlag === flag.id}
+                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 ${
+                            flag.rule?.enabled ? "bg-indigo-600" : "bg-gray-200"
+                          }`}
+                          title={
+                            flag.rule?.enabled
+                              ? "Click to disable"
+                              : "Click to enable"
+                          }
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                              flag.rule?.enabled
+                                ? "translate-x-5"
+                                : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-medium text-gray-900 truncate">
                             {flag.name}
                           </h3>
-                          <div className="flex items-center space-x-2">
-                            {getStatusBadge(flag.status)}
-                            {getRolloutBadge(flag.rule)}
-                          </div>
-                        </div>
-                        <div className="mt-1">
                           <p className="text-sm text-gray-500">
-                            Key:{" "}
                             <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">
                               {flag.key}
                             </code>
+                            {flag.description && (
+                              <span className="ml-2 text-xs truncate">
+                                {flag.description}
+                              </span>
+                            )}
                           </p>
-                          {flag.description && (
-                            <p className="mt-1 text-sm text-gray-500">
-                              {flag.description}
-                            </p>
-                          )}
                         </div>
                       </div>
-                      <button
-                        onClick={() => openRuleDrawer(flag)}
-                        className="ml-4 text-indigo-600 hover:text-indigo-900"
-                        title="Configure Rule"
-                      >
-                        <Settings className="h-5 w-5" />
-                      </button>
+
+                      <div className="flex items-center space-x-3 ml-4">
+                        {getRolloutBadge(flag.rule)}
+
+                        <button
+                          onClick={() => openRuleDrawer(flag)}
+                          className="text-gray-400 hover:text-indigo-600 transition-colors"
+                          title="Configure"
+                        >
+                          <Settings className="h-5 w-5" />
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmDeleteFlag(flag.id);
+                          }}
+                          className="text-gray-400 hover:text-red-600 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </div>
                     </div>
                   </li>
                 ))}
@@ -401,7 +491,18 @@ export const Flags: React.FC = () => {
                 id="flagName"
                 required
                 value={flagName}
-                onChange={(e) => setFlagName(e.target.value)}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  setFlagName(name);
+                  if (!flagKey) {
+                    setFlagKey(
+                      name
+                        .toLowerCase()
+                        .replace(/\s+/g, "_")
+                        .replace(/[^a-z0-9_]/g, ""),
+                    );
+                  }
+                }}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
                 placeholder="New Checkout Flow"
               />
