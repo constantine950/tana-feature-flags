@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, Copy, RefreshCw, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Copy, RefreshCw, Trash2, Edit, ArrowLeft } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Modal } from "../components/Modal";
 import { EmptyState } from "../components/EmptyState";
@@ -28,6 +28,14 @@ export const ProjectDetails: React.FC = () => {
   const [confirmDeleteEnv, setConfirmDeleteEnv] = useState<string | null>(null);
   const [confirmRotateEnv, setConfirmRotateEnv] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const [isEditingProject, setIsEditingProject] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [updatingProject, setUpdatingProject] = useState(false);
+  const [editError, setEditError] = useState("");
+
+  const [confirmDeleteProject, setConfirmDeleteProject] = useState(false);
+  const [deletingProject, setDeletingProject] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -124,6 +132,50 @@ export const ProjectDetails: React.FC = () => {
     }
   };
 
+  const handleOpenEdit = () => {
+    if (project) {
+      setEditName(project.name);
+      setEditDescription(project.description || "");
+      setIsEditingProject(true);
+    }
+  };
+
+  const handleUpdateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!project) return;
+
+    setEditError("");
+    setUpdatingProject(true);
+
+    try {
+      await projectsApi.update(project.id, editName, editDescription);
+      toast.success("Project updated!");
+      setIsEditingProject(false);
+      loadProject();
+    } catch (err: any) {
+      setEditError(
+        err.response?.data?.error?.message || "Failed to update project",
+      );
+    } finally {
+      setUpdatingProject(false);
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!project) return;
+    setDeletingProject(true);
+
+    try {
+      await projectsApi.delete(project.id);
+      toast.success("Project deleted");
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error("Failed to delete project");
+    } finally {
+      setDeletingProject(false);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -157,7 +209,7 @@ export const ProjectDetails: React.FC = () => {
           Back to projects
         </button>
 
-        <div className="sm:flex sm:items-center">
+        <div className="sm:flex sm:items-center sm:justify-between">
           <div className="sm:flex-auto">
             <h1 className="text-2xl font-semibold text-gray-900">
               {project.name}
@@ -168,7 +220,26 @@ export const ProjectDetails: React.FC = () => {
               </p>
             )}
           </div>
-          <div className="mt-4 sm:mt-0">
+          <div className="mt-4 sm:mt-0 flex space-x-2">
+            {/* Edit Button */}
+            <button
+              onClick={handleOpenEdit}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </button>
+
+            {/* Delete Button */}
+            <button
+              onClick={() => setConfirmDeleteProject(true)}
+              className="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </button>
+
+            {/* View Flags Button */}
             <button
               onClick={() => navigate(`/projects/${id}/flags`)}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -261,6 +332,76 @@ export const ProjectDetails: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Project Modal */}
+      <Modal
+        isOpen={isEditingProject}
+        onClose={() => {
+          setIsEditingProject(false);
+          setEditError("");
+        }}
+        title="Edit Project"
+      >
+        <form onSubmit={handleUpdateProject}>
+          {editError && (
+            <div className="mb-4 rounded-md bg-red-50 p-4">
+              <div className="text-sm text-red-800">{editError}</div>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="editName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="editName"
+                required
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="editDescription"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description (optional)
+              </label>
+              <textarea
+                id="editDescription"
+                rows={3}
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+              />
+            </div>
+          </div>
+
+          <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+            <button
+              type="submit"
+              disabled={updatingProject}
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm disabled:opacity-50"
+            >
+              {updatingProject ? "Updating..." : "Update"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditingProject(false)}
+              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Create Environment Modal */}
       <Modal
@@ -406,6 +547,16 @@ export const ProjectDetails: React.FC = () => {
         confirmLabel="Delete"
         confirmVariant="danger"
         loading={confirming}
+      />
+      <ConfirmDialog
+        isOpen={confirmDeleteProject}
+        onClose={() => setConfirmDeleteProject(false)}
+        onConfirm={handleDeleteProject}
+        title="Delete Project"
+        message="This will permanently delete the project and all its environments, flags, and rules. This cannot be undone."
+        confirmLabel="Delete Project"
+        confirmVariant="danger"
+        loading={deletingProject}
       />
     </Layout>
   );

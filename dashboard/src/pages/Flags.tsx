@@ -404,6 +404,7 @@ export const Flags: React.FC = () => {
                       </div>
 
                       <div className="flex items-center space-x-3 ml-4">
+                        {getStatusBadge(flag.status)}
                         {getRolloutBadge(flag.rule)}
 
                         <button
@@ -694,6 +695,16 @@ export const Flags: React.FC = () => {
           </div>
         </div>
       </Drawer>
+      <ConfirmDialog
+        isOpen={!!confirmDeleteFlag}
+        onClose={() => setConfirmDeleteFlag(null)}
+        onConfirm={handleDeleteFlag}
+        title="Delete Flag"
+        message="This will permanently delete this flag and all its rules across all environments. This cannot be undone."
+        confirmLabel="Delete Flag"
+        confirmVariant="danger"
+        loading={deletingFlag}
+      />
     </Layout>
   );
 };

@@ -6,7 +6,7 @@ import redis from "../config/redis";
 
 export class EvaluationService {
   // Cache TTL (60 seconds)
-  private static CACHE_TTL = 60;
+  private static CACHE_TTL = 5;
 
   // Evaluate flag for user
   static evaluate(
