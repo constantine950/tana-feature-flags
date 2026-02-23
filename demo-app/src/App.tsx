@@ -56,7 +56,7 @@ function App() {
             </div>
 
             {flags[FLAGS.PREMIUM_BADGE] && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-linear-to-r from-purple-600 to-pink-600 text-white">
                 ⭐ Premium Member
               </span>
             )}
@@ -66,7 +66,7 @@ function App() {
 
       {/* Discount Banner */}
       {flags[FLAGS.DISCOUNT_BANNER] && (
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <div className="bg-linear-to-r from-indigo-600 to-purple-600 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <p className="text-center text-sm font-medium">
               🎉 Special Offer: 50% OFF on all items! Use code: TANA50
@@ -120,7 +120,7 @@ function App() {
               key={i}
               className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600" />
+              <div className="aspect-square bg-linear-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600" />
               <div className="p-4 bg-white dark:bg-gray-800">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                   Product {i}
@@ -139,7 +139,7 @@ function App() {
                       onClick={() =>
                         toast.success("Added to cart! (New Checkout)")
                       }
-                      className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
+                      className="px-4 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                     >
                       🛒 Buy Now
                     </button>
