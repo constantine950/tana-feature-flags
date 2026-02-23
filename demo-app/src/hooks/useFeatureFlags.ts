@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { flagsClient, FLAGS } from "../lib/flags";
 
@@ -13,6 +11,8 @@ export function useFeatureFlags(userId: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!userId) return;
+
     const loadFlags = async () => {
       try {
         const result = await flagsClient.getAllFlags(
@@ -28,7 +28,9 @@ export function useFeatureFlags(userId: string) {
     };
 
     loadFlags();
-    const interval = setInterval(loadFlags, 3000);
+
+    // Reload flags every 5 seconds to see live updates
+    const interval = setInterval(loadFlags, 5000);
     return () => clearInterval(interval);
   }, [userId]);
 

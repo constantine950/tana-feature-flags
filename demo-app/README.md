@@ -1,44 +1,54 @@
-# Tana Feature Flags - Demo App
+# Tana Demo App - Vite
 
-Live demo showing feature flags in action!
-
-## Features
-
-- 🌙 **Dark Mode** - Toggle entire theme
-- 🛒 **New Checkout** - A/B test checkout button styles
-- ⭐ **Premium Badge** - Show/hide premium status
-- 🎉 **Discount Banner** - Toggle promotional banner
+Live feature flag demo app.
 
 ## Setup
 
+1. **Install dependencies:**
+
 ```bash
-# Install dependencies
 npm install
+```
 
-# Add your API key
-cp .env.example .env
-# Edit .env with your API key
+2. **Update `.env` with your API key:**
 
-# Run
+```bash
+VITE_TANA_API_KEY=ffk_dev_your_actual_key_here
+```
+
+3. **Make sure backend is running:**
+
+```bash
+cd ../backend
 npm run dev
 ```
 
+4. **Run demo app:**
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5174
+
 ## How It Works
 
-1. App loads flags on mount using SDK
-2. Polls for updates every 10 seconds
-3. UI automatically updates when flags change
-4. Each user gets deterministic bucket assignment
+- Polls for flag updates every 5 seconds
+- Dark mode toggles entire theme
+- New checkout shows gradient buttons
+- Premium badge appears when enabled
+- Discount banner shows when enabled
 
 ## Testing
 
-1. Run this app
-2. Open Tana dashboard
-3. Toggle flags on/off
-4. Watch this app update automatically!
+1. Go to dashboard (http://localhost:5173)
+2. Toggle any flag on/off
+3. Wait 5 seconds
+4. Watch demo app update automatically! ✨
 
-## User ID
+## Features
 
-Each session gets a random user ID like `demo_user_abc123`.
-
-Refresh to get a new user (different rollout bucket).
+- 🌙 Dark Mode
+- 🛒 New Checkout
+- ⭐ Premium Badge
+- 🎉 Discount Banner
