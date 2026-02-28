@@ -1,7 +1,7 @@
 {
   "name": "tana-feature-flags",
   "version": "1.0.0",
-  "description": "Production-grade feature flag service - 30 day portfolio project",
+  "description": "Production-grade feature flag service",
   "private": true,
   "workspaces": [
     "backend",
@@ -34,7 +34,7 @@
     "portfolio",
     "production-ready"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "Constantine",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -45,6 +45,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/tana-feature-flags.git"
+    "url": "https://github.com/constantine950/tana-feature-flags.git"
   }
 }
