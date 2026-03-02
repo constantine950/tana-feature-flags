@@ -20,7 +20,7 @@ export class UserService {
     const result = await query(
       `INSERT INTO users (email, password_hash, name)
        VALUES ($1, $2, $3)
-       RETURNING id, email, password_hash, name, created_at, updated_at, last_login_at`,
+       RETURNING id, email, password_hash, name, created_at, updated_at`,
       [email.toLowerCase(), passwordHash, name || null],
     );
 
@@ -61,13 +61,6 @@ export class UserService {
     }
 
     return user;
-  }
-
-  // Update last login
-  static async updateLastLogin(userId: string): Promise<void> {
-    await query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [
-      userId,
-    ]);
   }
 
   // Convert User to UserResponse (remove password)

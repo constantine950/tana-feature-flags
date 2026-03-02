@@ -85,7 +85,6 @@ export class FlagController {
         key,
         name,
         description || null,
-        req.user.userId,
       );
 
       await AuditService.log(req.user.userId, "create", "flag", flag.id, {

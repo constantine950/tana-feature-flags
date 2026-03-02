@@ -8,7 +8,6 @@ export class FlagService {
     key: string,
     name: string,
     description: string | null,
-    createdBy: string,
   ): Promise<FeatureFlag> {
     // Validate key format (snake_case)
     if (!/^[a-z0-9_]+$/.test(key)) {
@@ -18,10 +17,10 @@ export class FlagService {
     }
 
     const result = await query(
-      `INSERT INTO feature_flags (project_id, key, name, description, status, created_by)
-       VALUES ($1, $2, $3, $4, 'active', $5)
+      `INSERT INTO feature_flags (project_id, key, name, description, status)
+       VALUES ($1, $2, $3, $4, 'active')
        RETURNING *`,
-      [projectId, key, name, description, createdBy],
+      [projectId, key, name, description],
     );
 
     return result.rows[0];

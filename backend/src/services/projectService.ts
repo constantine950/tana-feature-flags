@@ -25,7 +25,7 @@ export class ProjectService {
         (SELECT COUNT(*) FROM environments WHERE project_id = p.id) as environment_count,
         (SELECT COUNT(*) FROM feature_flags WHERE project_id = p.id) as flag_count
        FROM projects p
-       WHERE owner_id = $1 AND deleted_at IS NULL
+       WHERE owner_id = $1
        ORDER BY created_at DESC`,
       [ownerId],
     );
@@ -40,7 +40,7 @@ export class ProjectService {
         (SELECT COUNT(*) FROM environments WHERE project_id = p.id) as environment_count,
         (SELECT COUNT(*) FROM feature_flags WHERE project_id = p.id) as flag_count
        FROM projects p
-       WHERE id = $1 AND deleted_at IS NULL`,
+       WHERE id = $1`,
       [id],
     );
 
@@ -79,7 +79,7 @@ export class ProjectService {
     const result = await query(
       `UPDATE projects 
        SET ${updates.join(", ")}
-       WHERE id = $${paramCount} AND deleted_at IS NULL
+       WHERE id = $${paramCount}
        RETURNING *`,
       values,
     );
@@ -92,7 +92,7 @@ export class ProjectService {
     const result = await query(
       `UPDATE projects 
        SET deleted_at = NOW()
-       WHERE id = $1 AND deleted_at IS NULL
+       WHERE id = $1
        RETURNING id`,
       [id],
     );
@@ -104,7 +104,7 @@ export class ProjectService {
   static async isOwner(projectId: string, userId: string): Promise<boolean> {
     const result = await query(
       `SELECT id FROM projects 
-       WHERE id = $1 AND owner_id = $2 AND deleted_at IS NULL`,
+       WHERE id = $1 AND owner_id = $2`,
       [projectId, userId],
     );
 

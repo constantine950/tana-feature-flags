@@ -2,7 +2,7 @@ import { TanaClient } from "../../../sdk/src";
 
 const API_KEY =
   import.meta.env.VITE_TANA_API_KEY ||
-  "ffk_dev_a0fd57a4af2cb4f723435c2c44408ca2";
+  "ffk_dev_741b30338c3e937761a73f04ad8fbee4";
 
 export const flagsClient = new TanaClient({
   apiKey: API_KEY,

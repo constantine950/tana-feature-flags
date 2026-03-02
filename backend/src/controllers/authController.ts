@@ -102,9 +102,6 @@ export class AuthController {
         });
       }
 
-      // Update last login
-      await UserService.updateLastLogin(user.id);
-
       // Generate token
       const token = generateToken(user.id, user.email);
 
