@@ -2,11 +2,12 @@ import { TanaClient } from "../../../sdk/src";
 
 const API_KEY =
   import.meta.env.VITE_TANA_API_KEY ||
-  "ffk_dev_741b30338c3e937761a73f04ad8fbee4";
+  "ffk_prod_13009775ce966236bee0dfa9c49acb1b";
 
 export const flagsClient = new TanaClient({
   apiKey: API_KEY,
-  apiUrl: "http://localhost:3000",
+  apiUrl:
+    import.meta.env.VITE_API_URL || "https://tana-feature-flags.onrender.com",
   cacheEnabled: true,
   cacheTTL: 60000,
 });
