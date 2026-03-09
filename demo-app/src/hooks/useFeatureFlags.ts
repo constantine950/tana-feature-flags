@@ -30,7 +30,7 @@ export function useFeatureFlags(userId: string) {
     loadFlags();
 
     // Reload flags every 5 seconds to see live updates
-    const interval = setInterval(loadFlags, 5000);
+    const interval = setInterval(loadFlags, 3000);
     return () => clearInterval(interval);
   }, [userId]);
 
