@@ -37,8 +37,7 @@ export const query = async (text: string, params?: any[]) => {
 // Test connection
 export const testConnection = async (): Promise<boolean> => {
   try {
-    const result = await query("SELECT NOW() as now");
-    console.log("✅ Database test successful:", result.rows[0]);
+    await query("SELECT NOW() as now");
     return true;
   } catch (error) {
     console.error("❌ Database test failed:", error);
@@ -54,7 +53,6 @@ export const getClient = async (): Promise<PoolClient> => {
 // Close pool
 export const closePool = async (): Promise<void> => {
   await pool.end();
-  console.log("Database pool closed");
 };
 
 export default pool;

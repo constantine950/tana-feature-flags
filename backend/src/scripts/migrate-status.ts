@@ -11,7 +11,7 @@ async function showMigrationStatus(): Promise<void> {
   });
 
   try {
-    console.log("📊 Migration Status\n");
+    console.log("Migration Status\n");
 
     // Ensure migrations table exists
     await pool.query(`

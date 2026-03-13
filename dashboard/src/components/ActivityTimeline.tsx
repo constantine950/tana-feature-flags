@@ -4,9 +4,9 @@ import { CheckCircle, XCircle, Edit, Plus, Trash2 } from "lucide-react";
 interface Activity {
   id: string;
   action: string;
-  entity_type: string; // Changed from resource_type
+  entity_type: string;
   user_email: string;
-  changes: any; // Changed from details
+  changes: any;
   created_at: string;
 }
 
@@ -58,7 +58,6 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
 
-    // Show absolute time instead of relative
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
 

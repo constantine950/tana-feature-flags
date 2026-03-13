@@ -7,7 +7,6 @@ import { ProjectDetails } from "./pages/ProjectDetails";
 import { Projects } from "./pages/Projects";
 import { Flags } from "./pages/Flags";
 
-// Protected route wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -28,7 +27,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   return <>{children}</>;
 };
 
-// Public route wrapper (redirect to dashboard if logged in)
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
 

@@ -2,8 +2,8 @@ import rateLimit from "express-rate-limit";
 
 // Evaluation endpoint rate limiter
 export const evaluationLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 1000, // 1000 requests per minute per IP
+  windowMs: 60 * 1000,
+  max: 1000,
   message: {
     error: {
       code: "RATE_LIMIT_EXCEEDED",
@@ -16,8 +16,8 @@ export const evaluationLimiter = rateLimit({
 
 // Batch evaluation has stricter limit
 export const batchEvaluationLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 100, // 100 batch requests per minute
+  windowMs: 60 * 1000,
+  max: 100,
   message: {
     error: {
       code: "RATE_LIMIT_EXCEEDED",
