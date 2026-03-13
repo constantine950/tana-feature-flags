@@ -34,7 +34,6 @@ export const Flags: React.FC = () => {
   const [deletingFlag, setDeletingFlag] = useState(false);
   const [loadingFlags, setLoadingFlags] = useState(false);
 
-  // Create flag modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [flagKey, setFlagKey] = useState("");
   const [flagName, setFlagName] = useState("");
@@ -42,7 +41,6 @@ export const Flags: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
-  // Rule drawer
   const [showRuleDrawer, setShowRuleDrawer] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState<FlagWithRule | null>(null);
   const [ruleEnabled, setRuleEnabled] = useState(false);
@@ -122,7 +120,6 @@ export const Flags: React.FC = () => {
   const openRuleDrawer = async (flag: FlagWithRule) => {
     setSelectedFlag(flag);
 
-    // Load stats
     try {
       const data = await analyticsApi.getFlagStats(flag.id);
       setFlagStats(data.stats);
