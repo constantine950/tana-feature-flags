@@ -10,11 +10,11 @@ const pool = new Pool({
 
 // Event handlers
 pool.on("connect", () => {
-  console.log("✅ Database connected");
+  console.log("Database connected");
 });
 
 pool.on("error", (err) => {
-  console.error("❌ Database error:", err);
+  console.error("Database error:", err);
 });
 
 // Helper for queries
@@ -24,7 +24,7 @@ export const query = async (text: string, params?: any[]) => {
   const duration = Date.now() - start;
 
   if (process.env.NODE_ENV === "development") {
-    console.log("📊 Query:", {
+    console.log("Query:", {
       text: text.substring(0, 50),
       duration: `${duration}ms`,
       rows: res.rowCount,
@@ -40,7 +40,7 @@ export const testConnection = async (): Promise<boolean> => {
     await query("SELECT NOW() as now");
     return true;
   } catch (error) {
-    console.error("❌ Database test failed:", error);
+    console.error("Database test failed:", error);
     return false;
   }
 };

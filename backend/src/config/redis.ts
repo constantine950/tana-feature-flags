@@ -8,25 +8,25 @@ const redis = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
 });
 
 redis.on("connect", () => {
-  console.log("✅ Redis connected");
+  console.log("Redis connected");
 });
 
 redis.on("error", (err) => {
-  console.error("❌ Redis error:", err);
+  console.error("Redis error:", err);
 });
 
 redis.on("ready", () => {
-  console.log("✅ Redis ready");
+  console.log("Redis ready");
 });
 
 // Test connection
 export const testRedisConnection = async (): Promise<boolean> => {
   try {
     const result = await redis.ping();
-    console.log("✅ Redis test successful:", result);
+    console.log("Redis test successful:", result);
     return true;
   } catch (error) {
-    console.error("❌ Redis test failed:", error);
+    console.error("Redis test failed:", error);
     return false;
   }
 };

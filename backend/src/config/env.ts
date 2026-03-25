@@ -17,7 +17,7 @@ interface EnvConfig {
 const required = ["DATABASE_URL", "REDIS_URL", "JWT_SECRET", "API_KEY_SECRET"];
 for (const envVar of required) {
   if (!process.env[envVar]) {
-    throw new Error(`❌ Missing environment variable: ${envVar}`);
+    throw new Error(`Missing environment variable: ${envVar}`);
   }
 }
 
@@ -33,7 +33,7 @@ export const config: EnvConfig = {
 };
 
 if (config.nodeEnv === "development") {
-  console.log("⚙️  Configuration loaded:", {
+  console.log("Configuration loaded:", {
     ...config,
     jwtSecret: "***hidden***",
     apiKeySecret: "***hidden***",
