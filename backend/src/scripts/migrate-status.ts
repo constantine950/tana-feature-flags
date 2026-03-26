@@ -48,10 +48,10 @@ async function showMigrationStatus(): Promise<void> {
     for (const file of files) {
       const executed = executedMap.get(file);
       if (executed) {
-        console.log(`✅      | ${file} (${executed.toISOString()})`);
+        console.log(`${file} (${executed.toISOString()})`);
         executedCount++;
       } else {
-        console.log(`⏳      | ${file} (pending)`);
+        console.log(`${file} (pending)`);
         pendingCount++;
       }
     }
@@ -62,12 +62,12 @@ async function showMigrationStatus(): Promise<void> {
     console.log(`Pending: ${pendingCount}`);
 
     if (pendingCount > 0) {
-      console.log("\n💡 Run `npm run migrate` to execute pending migrations");
+      console.log("\nRun `npm run migrate` to execute pending migrations");
     } else {
-      console.log("\n✨ All migrations are up to date!");
+      console.log("\nAll migrations are up to date!");
     }
   } catch (error) {
-    console.error("❌ Failed to check migration status:", error);
+    console.error("Failed to check migration status:", error);
     process.exit(1);
   } finally {
     await pool.end();

@@ -9,7 +9,7 @@ async function rollbackLastMigration(): Promise<void> {
   });
 
   try {
-    console.log("🔄 Rolling back last migration...\n");
+    console.log("Rolling back last migration...\n");
 
     // Get last migration
     const result = await pool.query<{
@@ -21,29 +21,25 @@ async function rollbackLastMigration(): Promise<void> {
     );
 
     if (result.rows.length === 0) {
-      console.log("⚠️  No migrations to rollback");
+      console.log("No migrations to rollback");
       return;
     }
 
     const lastMigration = result.rows[0];
-    console.log(`📝 Rolling back: ${lastMigration.filename}`);
-    console.log(`   Executed at: ${lastMigration.executed_at.toISOString()}\n`);
+    console.log(`Rolling back: ${lastMigration.filename}`);
+    console.log(`Executed at: ${lastMigration.executed_at.toISOString()}\n`);
 
     // Warning
-    console.log("⚠️  WARNING: This will delete the migration record.");
-    console.log("   You must manually revert database changes!\n");
+    console.log("WARNING: This will delete the migration record.");
 
     // Remove migration record
     await pool.query("DELETE FROM schema_migrations WHERE id = $1", [
       lastMigration.id,
     ]);
 
-    console.log("✅ Migration record removed");
-    console.log(
-      "⚠️  Remember to manually undo the database changes if needed!\n",
-    );
+    console.log("Migration record removed");
   } catch (error) {
-    console.error("❌ Rollback failed:", error);
+    console.error("Rollback failed:", error);
     process.exit(1);
   } finally {
     await pool.end();

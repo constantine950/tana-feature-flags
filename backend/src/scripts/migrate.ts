@@ -11,7 +11,7 @@ async function runMigrations(): Promise<void> {
   });
 
   try {
-    console.log("🚀 Starting database migrations...\n");
+    console.log("Starting database migrations...\n");
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -29,7 +29,7 @@ async function runMigrations(): Promise<void> {
       .sort();
 
     if (files.length === 0) {
-      console.log("⚠️  No migration files found");
+      console.log("No migration files found");
       return;
     }
 
@@ -42,11 +42,11 @@ async function runMigrations(): Promise<void> {
       );
 
       if (result.rows.length > 0) {
-        console.log(`⏭️  ${file} - already executed`);
+        console.log(`${file} - already executed`);
         continue;
       }
 
-      console.log(`📝 Running migration: ${file}`);
+      console.log(`Running migration: ${file}`);
 
       try {
         // Read migration file
@@ -64,15 +64,15 @@ async function runMigrations(): Promise<void> {
 
         await pool.query("COMMIT");
 
-        console.log(`✅ ${file} - completed\n`);
+        console.log(`${file} - completed\n`);
       } catch (error) {
         await pool.query("ROLLBACK");
-        console.error(`❌ ${file} - failed:`, error);
+        console.error(`${file} - failed:`, error);
         throw error;
       }
     }
 
-    console.log("🎉 All migrations completed successfully!\n");
+    console.log("All migrations completed successfully!\n");
 
     // Show migration status
     const allMigrations = await pool.query<{
@@ -82,12 +82,12 @@ async function runMigrations(): Promise<void> {
       "SELECT filename, executed_at FROM schema_migrations ORDER BY executed_at",
     );
 
-    console.log("📊 Migration History:");
+    console.log("Migration History:");
     allMigrations.rows.forEach((row) => {
       console.log(`   ✓ ${row.filename} (${row.executed_at.toISOString()})`);
     });
   } catch (error) {
-    console.error("💥 Migration failed:", error);
+    console.error("Migration failed:", error);
     process.exit(1);
   } finally {
     await pool.end();

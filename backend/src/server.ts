@@ -59,24 +59,24 @@ app.use(errorHandler);
 // Start server
 const startServer = async () => {
   try {
-    console.log("🚀 Starting Tana API Server...\n");
+    console.log("Starting Tana API Server...\n");
 
-    console.log("📊 Testing database connection...");
+    console.log("Testing database connection...");
     const dbOk = await testConnection();
     if (!dbOk) throw new Error("Database connection failed");
 
-    console.log("🔴 Testing Redis connection...");
+    console.log("Testing Redis connection...");
     const redisOk = await testRedisConnection();
     if (!redisOk) throw new Error("Redis connection failed");
 
     app.listen(config.port, () => {
-      console.log("\n✅ Server started successfully!");
-      console.log(`📍 API: ${config.apiUrl}`);
-      console.log(`🌍 Environment: ${config.nodeEnv}`);
-      console.log(`\n💡 Try: curl ${config.apiUrl}/health\n`);
+      console.log("\nServer started successfully!");
+      console.log(`API: ${config.apiUrl}`);
+      console.log(`Environment: ${config.nodeEnv}`);
+      console.log(`\nTry: curl ${config.apiUrl}/health\n`);
     });
   } catch (error) {
-    console.error("❌ Failed to start:", error);
+    console.error("Failed to start:", error);
     process.exit(1);
   }
 };

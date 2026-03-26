@@ -10,7 +10,7 @@ export const errorHandler = (err: ApiError, req: Request, res: Response) => {
   const message = err.message || "Internal Server Error";
   const code = err.code || "SERVER_ERROR";
 
-  console.error("❌ Error:", {
+  console.error("Error:", {
     statusCode,
     code,
     message,
