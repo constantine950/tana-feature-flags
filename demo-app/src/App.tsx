@@ -16,7 +16,6 @@ function App() {
   const { flags, loading } = useFeatureFlags(userId);
   const darkMode = flags[FLAGS.DARK_MODE];
 
-  // Apply dark mode to HTML element
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");

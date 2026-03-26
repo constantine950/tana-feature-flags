@@ -112,7 +112,3 @@ Client App → SDK → API Server → PostgreSQL
 - Throughput: 1000+ req/sec
 
 ---
-
-## License
-
-MIT License - See [LICENSE](LICENSE) file
