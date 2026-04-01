@@ -88,16 +88,8 @@ export class ProjectService {
   }
 
   // Soft delete project
-  static async deleteProject(id: string): Promise<boolean> {
-    const result = await query(
-      `UPDATE projects 
-       SET deleted_at = NOW()
-       WHERE id = $1
-       RETURNING id`,
-      [id],
-    );
-
-    return result.rows.length > 0;
+  static async deleteProject(id: string): Promise<void> {
+    await query("DELETE FROM projects WHERE id = $1", [id]);
   }
 
   // Check if user owns project

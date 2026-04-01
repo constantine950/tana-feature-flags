@@ -141,39 +141,23 @@ export class ProjectController {
   // DELETE /api/v1/projects/:id
   static async deleteProject(req: Request, res: Response) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          error: { code: "UNAUTHORIZED", message: "Not authenticated" },
-        });
-      }
-
       const { id } = req.params;
 
-      // Check ownership
-      const isOwner = await ProjectService.isOwner(id, req.user.userId);
+      // Verify ownership
+      const isOwner = await ProjectService.isOwner(id, req.user!.userId);
       if (!isOwner) {
-        return res.status(403).json({
-          error: { code: "FORBIDDEN", message: "Not project owner" },
-        });
+        return res.status(403).json({ error: "Forbidden" });
       }
 
-      const deleted = await ProjectService.deleteProject(id);
+      await ProjectService.deleteProject(id);
 
-      if (!deleted) {
-        return res.status(404).json({
-          error: { code: "PROJECT_NOT_FOUND", message: "Project not found" },
-        });
-      }
+      // Audit log
+      await AuditService.log(req.user!.userId, "delete", "project", id, {});
 
-      return res.json({
-        message: "Project deleted successfully",
-        projectId: id,
-      });
+      return res.status(204).send();
     } catch (error) {
       console.error("Delete project error:", error);
-      return res.status(500).json({
-        error: { code: "DELETE_FAILED", message: "Failed to delete project" },
-      });
+      return res.status(500).json({ error: "Failed to delete project" });
     }
   }
 }
