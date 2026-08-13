@@ -6,6 +6,7 @@ import { Register } from "./pages/Register";
 import { ProjectDetails } from "./pages/ProjectDetails";
 import { Projects } from "./pages/Projects";
 import { Flags } from "./pages/Flags";
+import LandingPage from "./pages/LandingPage";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -21,7 +22,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
@@ -50,6 +51,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route
             path="/login"
             element={

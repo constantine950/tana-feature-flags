@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+.landing {
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
+  background: #f5f7fa;
+  background-image:
+    linear-gradient(#e4e9f0 1px, transparent 1px),
+    linear-gradient(90deg, #e4e9f0 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: #12141c;
+  min-height: 100vh;
+}
+
+.landing-display {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.landing-mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Switchboard panel */
+.switchboard {
+  background: #ffffff;
+  border: 1px solid #dce2ea;
+  border-radius: 14px;
+  box-shadow:
+    0 1px 2px rgba(18, 20, 28, 0.04),
+    0 12px 32px -16px rgba(18, 20, 28, 0.12);
+}
+
+.switch-row {
+  border-bottom: 1px solid #eef1f5;
+}
+
+.switch-row:last-child {
+  border-bottom: none;
+}
+
+.switch-track {
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: #dce2ea;
+  position: relative;
+  transition: background-color 0.5s ease;
+  flex-shrink: 0;
+}
+
+.switch-track.is-on {
+  background: #2c5cf6;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.switch-track.is-on .switch-thumb {
+  transform: translateX(18px);
+}
+
+.rollout-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: #eef1f5;
+  overflow: hidden;
+}
+
+.rollout-fill {
+  height: 100%;
+  background: #ffb020;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  animation: pulse-ring 2s infinite;
+}
+
+.pulse-dot.is-off {
+  background: #b5bcc9;
+  animation: none;
+  box-shadow: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.grain-accent {
+  background: linear-gradient(135deg, #2c5cf6 0%, #6c8cfb 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch-thumb,
+  .switch-track,
+  .rollout-fill {
+    transition: none !important;
+  }
+  .pulse-dot {
+    animation: none !important;
+  }
+}

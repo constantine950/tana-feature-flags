@@ -10,7 +10,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
